@@ -1,4 +1,4 @@
-# Spot the Difference — Six Scenes, 48 Differences
+# Spot the Difference — Eight Scenes, 64 Differences
 
 [![make.fun](https://make.fun/badge/best-spot-the-difference-game-20261121-0451.svg)](https://make.fun/bounty/best-spot-the-difference-game-20261121-0451)
 [![rank](https://make.fun/badge/best-spot-the-difference-game-20261121-0451/Abkhas/spot-the-difference-game-20261121-entry/rank.svg)](https://make.fun/bounty/best-spot-the-difference-game-20261121-0451)
@@ -8,8 +8,8 @@ A complete spot-the-difference game for the [make.fun bounty](https://make.fun/b
 
 ## The game
 
-- **6 hand-drawn scenes** — Night Market, Old Library, Harbour at Dusk, Bakery Kitchen, Train Station, Greenhouse Garden — each drawn in code (canvas 2D, no image files, no network).
-- **48 differences** — 8 per scene: objects added or removed, colours swapped, signs reworded, lights switched, counts changed. Fair but not obvious.
+- **8 hand-drawn scenes** — Night Market, Old Library, Harbour at Dusk, Bakery Kitchen, Train Station, Greenhouse Garden, Space Station, Beach Pier — each drawn in code (canvas 2D, no image files, no network).
+- **64 differences** — 8 per scene: objects added or removed, colours swapped, signs reworded, lights switched, counts changed. Fair but not obvious.
 - **3 difficulties** — Easy (5 differences, 150 s), Normal (7, 120 s), Hard (8, 90 s).
 - **The hunt, on screen** — a big `FOUND n/N` counter with how many remain, a countdown timer that pulses red under 15 s, score and combo, hints (limited, with cooldown, highlighting a region — never the exact spot).
 - **Satisfying finds** — a numbered ring stamps onto both panels, a chime, a particle burst, `+points` and `+5s` floats. Wrong clicks cost points and shake the frame.
@@ -28,7 +28,7 @@ No build step, no network request: `game/index.html` and its ES modules under `g
 ## Layout
 
 - `game/src/config.js` — canvas geometry, difficulty tables, scoring rules
-- `game/src/scenes.js` — the six scenes and their 48 difference tables
+- `game/src/scenes.js` — the eight scenes and their 64 difference tables
 - `game/src/differences.js` — which differences are in play, hit testing
 - `game/src/render.js` — header HUD, panels, markers, screens
 - `game/src/input.js` — pointer and keyboard input, panel mapping

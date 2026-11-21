@@ -103,7 +103,7 @@ function drawHeader(ctx, game) {
   ctx.fillRect(0, HEADER_HEIGHT - 4, CANVAS_WIDTH, 4);
   const scene = game.scene;
   const diff = DIFFICULTIES[game.difficulty];
-  text(ctx, `LEVEL ${scene.number}/6`, 20, 26, 22, PALETTE.headerText);
+  text(ctx, `LEVEL ${scene.number}/${SCENES.length}`, 20, 26, 22, PALETTE.headerText);
   text(ctx, scene.name, 20, 56, 20, '#ffffff');
   // Difficulty badge.
   const badgeText = `  ${diff.label}  `;
@@ -225,7 +225,7 @@ function drawFooter(ctx, game) {
     ? `NEXT: LEVEL ${next.number} — ${next.name}`
     : 'NEXT: FREE PLAY — REPLAY ANY LEVEL';
   text(ctx, nextLabel, 20, 700, 18, '#5a4a3a');
-  // Progress dots for all six levels.
+  // Progress dots for all eight levels.
   for (let i = 0; i < SCENES.length; i += 1) {
     const cx = 96 + i * 48;
     const cy = 748;
@@ -295,7 +295,7 @@ function drawTitle(ctx, game) {
   ctx.fillStyle = 'rgba(29, 24, 48, 0.55)';
   ctx.fillRect(0, 0, CANVAS_WIDTH, 430);
   text(ctx, 'SPOT THE DIFFERENCE', CANVAS_WIDTH / 2, 120, 64, '#ffffff', 'center');
-  text(ctx, 'Six hand-drawn scenes  ·  48 differences hiding in plain sight', CANVAS_WIDTH / 2, 180, 22, PALETTE.headerText, 'center');
+  text(ctx, 'Eight hand-drawn scenes  ·  64 differences hiding in plain sight', CANVAS_WIDTH / 2, 180, 22, PALETTE.headerText, 'center');
   text(ctx, 'Two pictures, side by side. Click every difference before the clock runs out.', CANVAS_WIDTH / 2, 214, 18, '#ffffff', 'center');
   // Difficulty cards.
   const cards = titleDifficultyCards();
@@ -320,7 +320,7 @@ function drawTitle(ctx, game) {
   text(ctx, 'H shows a hint region  ·  P pauses  ·  M mutes  ·  Arrow keys + Space play by keyboard.', CANVAS_WIDTH / 2, 560, 17, '#ffffff', 'center');
   const stars = totalStars(game.progress);
   const best = totalBestScore(game.progress);
-  text(ctx, stars > 0 || best > 0 ? `YOUR BEST SO FAR: ${stars}/18 STARS  ·  ${best} POINTS` : 'NO GAMES PLAYED YET — PICK A DIFFICULTY ABOVE', CANVAS_WIDTH / 2, 610, 17, PALETTE.headerText, 'center');
+  text(ctx, stars > 0 || best > 0 ? `YOUR BEST SO FAR: ${stars}/24 STARS  ·  ${best} POINTS` : 'NO GAMES PLAYED YET — PICK A DIFFICULTY ABOVE', CANVAS_WIDTH / 2, 610, 17, PALETTE.headerText, 'center');
   drawButton(ctx, titleStartButton(), 'CHOOSE A LEVEL  →', PALETTE.gold);
   text(ctx, 'Every scene is drawn in code — no photos, no stock art.', CANVAS_WIDTH / 2, 740, 14, '#8a8496', 'center');
 }
@@ -345,7 +345,7 @@ function drawSelect(ctx, game) {
   text(ctx, 'CHOOSE YOUR SCENE', CANVAS_WIDTH / 2, 60, 40, '#ffffff', 'center');
   const diff = DIFFICULTIES[game.difficulty];
   text(ctx, `Difficulty: ${diff.label} — ${diff.diffs} differences, ${formatTime(diff.seconds)} on the clock, ${diff.hints} hints`, CANVAS_WIDTH / 2, 104, 18, PALETTE.headerText, 'center');
-  text(ctx, `6 SCENES  ·  48 DIFFERENCES  ·  ${totalStars(game.progress)}/18 STARS EARNED`, CANVAS_WIDTH / 2, 134, 16, '#8a8496', 'center');
+  text(ctx, `8 SCENES  ·  64 DIFFERENCES  ·  ${totalStars(game.progress)}/24 STARS EARNED`, CANVAS_WIDTH / 2, 134, 16, '#8a8496', 'center');
   // Difficulty switcher.
   for (const card of selectDifficultyButtons()) {
     const d = DIFFICULTIES[card.key];
@@ -362,7 +362,7 @@ function drawSelect(ctx, game) {
     roundRect(ctx, card.x, card.y, card.w, card.h, 14);
     ctx.fill();
     drawSceneInto(ctx, scene, new Set(), card.x + 10, card.y + 10, card.w - 20, 130);
-    text(ctx, `LEVEL ${scene.number} — ${scene.name}`, card.x + 16, card.y + 168, 19, '#23202b');
+    text(ctx, `LEVEL ${scene.number} — ${scene.name}`, card.x + 16, card.y + 168, 16, '#23202b');
     text(ctx, scene.tagline, card.x + 16, card.y + 192, 14, '#8a7a62');
     drawStars(ctx, card.x + 16, card.y + 216, levelStars(game.progress, scene.id), 13);
     const best = levelBestScore(game.progress, scene.id);
@@ -372,7 +372,8 @@ function drawSelect(ctx, game) {
       ctx.fillStyle = 'rgba(29, 24, 48, 0.72)';
       roundRect(ctx, card.x, card.y, card.w, card.h, 14);
       ctx.fill();
-      text(ctx, 'LOCKED — FINISH LEVEL ' + (scene.number - 1) + ' TO UNLOCK', card.x + card.w / 2, card.y + card.h / 2, 17, '#ffffff', 'center');
+      text(ctx, 'LOCKED', card.x + card.w / 2, card.y + card.h / 2 - 30, 18, '#ffffff', 'center');
+      text(ctx, 'FINISH LEVEL ' + (scene.number - 1) + ' TO UNLOCK', card.x + card.w / 2, card.y + card.h / 2 - 4, 15, '#ffffff', 'center');
     }
   }
   drawButton(ctx, selectBackButton(), '←  BACK TO TITLE', '#ffffff');
@@ -389,16 +390,17 @@ export function selectDifficultyButtons() {
 }
 
 export function selectSceneCards(game) {
-  const w = 390;
+  // Scene cards, 4 across, 2 down — eight scenes fit without scrolling.
+  const w = 290;
   const h = 270;
-  const gapX = 25;
+  const gapX = 20;
   const gapY = 16;
-  const x0 = (CANVAS_WIDTH - (w * 3 + gapX * 2)) / 2;
+  const x0 = (CANVAS_WIDTH - (w * 4 + gapX * 3)) / 2;
   const y0 = 206;
   return SCENES.map((scene, i) => ({
     scene,
-    x: x0 + (i % 3) * (w + gapX),
-    y: y0 + Math.floor(i / 3) * (h + gapY),
+    x: x0 + (i % 4) * (w + gapX),
+    y: y0 + Math.floor(i / 4) * (h + gapY),
     w, h,
   }));
 }
@@ -467,7 +469,7 @@ function drawGameComplete(ctx, game) {
   text(ctx, 'YOU FOUND THEM ALL!', CANVAS_WIDTH / 2, 180, 52, '#ffffff', 'center');
   text(ctx, 'Every difference in every scene — 48 out of 48.', CANVAS_WIDTH / 2, 240, 20, PALETTE.headerText, 'center');
   drawStars(ctx, CANVAS_WIDTH / 2 - 40, 310, 3, 26);
-  text(ctx, `${totalStars(game.progress)}/18 STARS  ·  BEST TOTAL ${totalBestScore(game.progress)} POINTS`, CANVAS_WIDTH / 2, 370, 20, '#ffffff', 'center');
+  text(ctx, `${totalStars(game.progress)}/24 STARS  ·  BEST TOTAL ${totalBestScore(game.progress)} POINTS`, CANVAS_WIDTH / 2, 370, 20, '#ffffff', 'center');
   text(ctx, 'Thanks for playing Spot the Difference. Pick a scene to hunt again.', CANVAS_WIDTH / 2, 410, 17, '#8a8496', 'center');
   drawButton(ctx, gameCompleteSelectButton(), 'PLAY AGAIN — LEVEL SELECT', PALETTE.gold);
 }

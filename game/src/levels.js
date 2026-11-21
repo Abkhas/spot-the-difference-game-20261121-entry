@@ -47,7 +47,7 @@ export function recordLevelComplete(progress, levelId, stars, score, secondsUsed
     progress.bestTime[levelId] = secondsUsed;
   }
   const levelNumber = Number(levelId.replace('level', ''));
-  progress.unlocked = Math.max(progress.unlocked, Math.min(6, levelNumber + 1));
+  progress.unlocked = Math.max(progress.unlocked, Math.min(8, levelNumber + 1));
   saveProgress(progress);
   return progress;
 }

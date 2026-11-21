@@ -1,4 +1,4 @@
-// Spot the Difference — the six scenes. Every picture is drawn in code (canvas
+// Spot the Difference — the eight scenes. Every picture is drawn in code (canvas
 // 2D, no image files): each scene is one function that paints the same place
 // twice, the right panel with a set of differences switched on. A difference
 // is a discrete, fair change: an object added or removed, a colour swapped,
@@ -1226,7 +1226,381 @@ const greenhouseDiffs = [
 ];
 
 // ---------------------------------------------------------------------------
-// The catalogue: six scenes, eight differences each, 48 in all.
+// Scene 7 — Space Station. A viewport on the stars, a telescope, a console
+// and things floating where they should not.
+// ---------------------------------------------------------------------------
+function drawSpaceStation(ctx, alt) {
+  // Interior wall and floor.
+  ctx.fillStyle = '#1a2340';
+  ctx.fillRect(0, 0, PANEL_W, PANEL_H);
+  ground(ctx, 470, '#232c4d');
+  // Ceiling pipe with rivets.
+  ctx.fillStyle = '#0d1226';
+  ctx.fillRect(0, 0, PANEL_W, 26);
+  ctx.fillStyle = '#5a6a8a';
+  for (let i = 0; i < 8; i += 1) {
+    circle(ctx, 40 + i * 78, 13, 4);
+    ctx.fill();
+  }
+  // Wall panel seams.
+  ctx.strokeStyle = '#2a3558';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(305, 26);
+  ctx.lineTo(305, 470);
+  ctx.stroke();
+  // Main viewport: a round window on deep space.
+  circle(ctx, 180, 140, 92);
+  ctx.fillStyle = '#050914';
+  ctx.fill();
+  ctx.fillStyle = '#fff6c9';
+  const viewStars = [[130, 90], [210, 95], [150, 180], [220, 160], [180, 70], [120, 140]];
+  for (const [x, y] of viewStars) {
+    if (x === 210 && alt.has('viewport-star')) continue;
+    star(ctx, x, y, 5);
+    ctx.fill();
+  }
+  // The planet, ringed in the original only.
+  circle(ctx, 160, 150, 26);
+  ctx.fillStyle = '#e8734a';
+  ctx.fill();
+  if (!alt.has('planet-rings')) {
+    ctx.strokeStyle = '#ffc53d';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.ellipse(160, 150, 42, 12, -0.4, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  ctx.strokeStyle = '#5a6a8a';
+  ctx.lineWidth = 8;
+  circle(ctx, 180, 140, 92);
+  ctx.stroke();
+  // Small viewport, three stars.
+  circle(ctx, 450, 110, 55);
+  ctx.fillStyle = '#050914';
+  ctx.fill();
+  ctx.fillStyle = '#fff6c9';
+  for (const [x, y] of [[430, 90], [460, 120], [470, 95]]) {
+    star(ctx, x, y, 4);
+    ctx.fill();
+  }
+  ctx.strokeStyle = '#5a6a8a';
+  ctx.lineWidth = 6;
+  circle(ctx, 450, 110, 55);
+  ctx.stroke();
+  // A MOON poster on the wall.
+  ctx.fillStyle = '#0d1226';
+  ctx.fillRect(300, 60, 110, 80);
+  ctx.strokeStyle = '#2ec4b6';
+  ctx.lineWidth = 3;
+  ctx.strokeRect(300, 60, 110, 80);
+  label(ctx, 'MOON', 355, 92, 18, '#ffc53d');
+  label(ctx, '2026', 355, 116, 14, '#fff8e7');
+  // Floating wrench (original only).
+  if (!alt.has('wrench-present')) {
+    ctx.fillStyle = '#c9d4e8';
+    rr(ctx, 108, 292, 12, 46, 5);
+    ctx.fill();
+    circle(ctx, 114, 282, 13);
+    ctx.fill();
+    circle(ctx, 114, 277, 6);
+    ctx.fillStyle = '#1a2340';
+    ctx.fill();
+  }
+  // Floating mugs: two in the original, one altered.
+  const mugXs = alt.has('mug-count') ? [480] : [480, 525];
+  for (const mx of mugXs) {
+    ctx.fillStyle = '#ff5d8f';
+    rr(ctx, mx - 9, 196, 18, 18, 3);
+    ctx.fill();
+    ctx.strokeStyle = '#ff5d8f';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(mx + 11, 205, 6, -Math.PI / 2, Math.PI / 2);
+    ctx.stroke();
+  }
+  // Deck sign: DECK 7 in the original, DECK 1 altered.
+  ctx.fillStyle = '#2b1a4d';
+  rr(ctx, 495, 280, 95, 38, 8);
+  ctx.fill();
+  label(ctx, alt.has('deck-sign') ? 'DECK 1' : 'DECK 7', 542, 300, 18, '#ffe9a8');
+  // Telescope on its tripod: tilted up in the original, level altered.
+  const tip = alt.has('telescope-tilt') ? [445, 325] : [420, 295];
+  ctx.strokeStyle = '#8a94a8';
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(480, 370);
+  ctx.lineTo(450, 470);
+  ctx.moveTo(480, 370);
+  ctx.lineTo(512, 470);
+  ctx.stroke();
+  ctx.strokeStyle = '#c9d4e8';
+  ctx.lineWidth = 16;
+  ctx.beginPath();
+  ctx.moveTo(480, 370);
+  ctx.lineTo(tip[0], tip[1]);
+  ctx.stroke();
+  circle(ctx, 480, 370, 14);
+  ctx.fillStyle = '#8a94a8';
+  ctx.fill();
+  // Cable from the telescope down to the console.
+  ctx.strokeStyle = '#0d1226';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(512, 460);
+  ctx.quadraticCurveTo(540, 500, 520, 530);
+  ctx.stroke();
+  // The astronaut helmet on the floor, lamp glowing in the original only.
+  circle(ctx, 90, 445, 26);
+  ctx.fillStyle = '#e8eef7';
+  ctx.fill();
+  ctx.fillStyle = '#1a2340';
+  ctx.beginPath();
+  ctx.arc(90, 445, 17, -Math.PI / 2, Math.PI / 2);
+  ctx.fill();
+  circle(ctx, 90, 415, 7);
+  ctx.fillStyle = alt.has('helmet-lamp') ? '#5a6a8a' : '#ffd94d';
+  ctx.fill();
+  // Floor console: screen plus a row of lights, the middle one red/green.
+  ctx.fillStyle = '#0d1226';
+  rr(ctx, 170, 480, 380, 60, 10);
+  ctx.fill();
+  ctx.fillStyle = '#123326';
+  ctx.fillRect(300, 490, 120, 40);
+  label(ctx, 'ORBIT', 360, 511, 14, '#2ec4b6');
+  for (let i = 0; i < 5; i += 1) {
+    const lx = 200 + i * 20;
+    circle(ctx, lx, 510, 7);
+    if (i === 2) ctx.fillStyle = alt.has('console-light') ? '#2ec4b6' : '#ff4d4d';
+    else ctx.fillStyle = i % 2 === 0 ? '#2ec4b6' : '#ffc53d';
+    ctx.fill();
+  }
+  // A floating pen for richness, and floor hatch stripes.
+  ctx.strokeStyle = '#ffc53d';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(300, 250);
+  ctx.lineTo(330, 262);
+  ctx.stroke();
+  ctx.fillStyle = '#ffc53d';
+  for (let i = 0; i < 10; i += 1) {
+    ctx.fillRect(20 + i * 62, 552, 26, 6);
+  }
+}
+
+const spaceStationDiffs = [
+  { id: 'planet-rings', x: 160, y: 150, r: 30, label: 'The planet lost its rings' },
+  { id: 'wrench-present', x: 115, y: 300, r: 28, label: 'The floating wrench is gone' },
+  { id: 'telescope-tilt', x: 435, y: 312, r: 30, label: 'The telescope tilted down' },
+  { id: 'deck-sign', x: 542, y: 299, r: 30, label: 'The deck sign changed number' },
+  { id: 'console-light', x: 240, y: 510, r: 18, label: 'The console light changed colour' },
+  { id: 'viewport-star', x: 210, y: 95, r: 18, label: 'A star vanished from the viewport' },
+  { id: 'mug-count', x: 505, y: 205, r: 26, label: 'A floating mug is missing' },
+  { id: 'helmet-lamp', x: 90, y: 415, r: 20, label: 'The helmet lamp went dark' },
+];
+
+// ---------------------------------------------------------------------------
+// Scene 8 — Beach / Pier. Sun, sea, a pier, umbrellas and a crab.
+// ---------------------------------------------------------------------------
+function drawBeachPier(ctx, alt) {
+  skyGradient(ctx, [[0, '#7ec8e3'], [0.6, '#bfe8f5'], [1, '#fff8e7']]);
+  // Sun with rays: eight in the original, six altered.
+  circle(ctx, 520, 70, 30);
+  ctx.fillStyle = '#ffd94d';
+  ctx.fill();
+  ctx.strokeStyle = '#e8b13a';
+  ctx.lineWidth = 4;
+  const beachRays = alt.has('sun-ray-count') ? 6 : 8;
+  for (let i = 0; i < beachRays; i += 1) {
+    const a = (i * Math.PI * 2) / 8;
+    ctx.beginPath();
+    ctx.moveTo(520 + Math.cos(a) * 38, 70 + Math.sin(a) * 38);
+    ctx.lineTo(520 + Math.cos(a) * 50, 70 + Math.sin(a) * 50);
+    ctx.stroke();
+  }
+  // Gulls: three in the original, two altered.
+  ctx.strokeStyle = '#23202b';
+  ctx.lineWidth = 3;
+  const gulls = [[120, 80], [180, 95], [250, 70]];
+  for (let i = 0; i < gulls.length; i += 1) {
+    if (i === 1 && alt.has('gull-count')) continue;
+    const [gx, gy] = gulls[i];
+    ctx.beginPath();
+    ctx.moveTo(gx - 10, gy);
+    ctx.quadraticCurveTo(gx - 4, gy - 8, gx, gy);
+    ctx.quadraticCurveTo(gx + 4, gy - 8, gx + 10, gy);
+    ctx.stroke();
+  }
+  // Sea with wave lines.
+  ctx.fillStyle = '#2e86c1';
+  ctx.fillRect(0, 180, PANEL_W, 200);
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+  ctx.lineWidth = 3;
+  for (const wy of [220, 260, 310]) {
+    ctx.beginPath();
+    for (let x = 20; x <= 590; x += 60) {
+      ctx.moveTo(x, wy);
+      ctx.quadraticCurveTo(x + 30, wy - 8, x + 60, wy);
+    }
+    ctx.stroke();
+  }
+  // The sailboat: white sail in the original, red altered.
+  ctx.fillStyle = '#8a5a2b';
+  ctx.beginPath();
+  ctx.moveTo(380, 300);
+  ctx.lineTo(450, 300);
+  ctx.lineTo(440, 320);
+  ctx.lineTo(390, 320);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = '#4a2c14';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(415, 300);
+  ctx.lineTo(415, 250);
+  ctx.stroke();
+  ctx.fillStyle = alt.has('sail-colour') ? '#ff5d5d' : '#ffffff';
+  ctx.beginPath();
+  ctx.moveTo(415, 250);
+  ctx.lineTo(415, 295);
+  ctx.lineTo(450, 295);
+  ctx.closePath();
+  ctx.fill();
+  // Sand.
+  ground(ctx, 380, '#f2d8a0');
+  // The pier: deck over the sea, posts down to the sand edge.
+  ctx.fillStyle = '#8a5a2b';
+  ctx.fillRect(0, 330, PANEL_W, 30);
+  ctx.strokeStyle = '#6b4423';
+  ctx.lineWidth = 2;
+  for (let x = 40; x < PANEL_W; x += 40) {
+    ctx.beginPath();
+    ctx.moveTo(x, 330);
+    ctx.lineTo(x, 360);
+    ctx.stroke();
+  }
+  const postXs = [40, 80, 200, 320, 440, 560];
+  for (const px of postXs) {
+    if (px === 80 && alt.has('pier-post')) continue;
+    ctx.fillStyle = '#6b4423';
+    ctx.fillRect(px - 6, 360, 12, 40);
+  }
+  // Umbrella one: red and white.
+  drawUmbrella(ctx, 140, 470, ['#ff5d5d', '#ffffff']);
+  // Umbrella two: teal and white, one stripe pink altered.
+  drawUmbrella(ctx, 450, 480, ['#2ec4b6', '#ffffff'], alt.has('umbrella-stripe'));
+  // Bucket (original only) and the spade that stays.
+  if (!alt.has('bucket-present')) {
+    ctx.fillStyle = '#ff5d5d';
+    ctx.beginPath();
+    ctx.moveTo(285, 500);
+    ctx.lineTo(315, 500);
+    ctx.lineTo(310, 530);
+    ctx.lineTo(290, 530);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = '#c0392b';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(300, 500, 12, Math.PI, 0);
+    ctx.stroke();
+  }
+  ctx.strokeStyle = '#8a5a2b';
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(335, 500);
+  ctx.lineTo(345, 528);
+  ctx.stroke();
+  ctx.fillStyle = '#2ec4b6';
+  ctx.beginPath();
+  ctx.moveTo(338, 526);
+  ctx.lineTo(352, 526);
+  ctx.lineTo(345, 540);
+  ctx.closePath();
+  ctx.fill();
+  // Beach ball: one stripe teal in the original, pink altered.
+  circle(ctx, 200, 525, 22);
+  ctx.fillStyle = '#ffffff';
+  ctx.fill();
+  ctx.fillStyle = alt.has('ball-stripe') ? '#ff5d8f' : '#2ec4b6';
+  ctx.beginPath();
+  ctx.moveTo(200, 525);
+  ctx.arc(200, 525, 22, -Math.PI / 2, Math.PI / 6);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = '#ffc53d';
+  ctx.beginPath();
+  ctx.moveTo(200, 525);
+  ctx.arc(200, 525, 22, Math.PI / 6, Math.PI * 0.85);
+  ctx.closePath();
+  ctx.fill();
+  // The crab on the sand (original only).
+  if (!alt.has('crab-present')) {
+    ctx.fillStyle = '#ff5d5d';
+    ctx.beginPath();
+    ctx.ellipse(520, 518, 16, 10, 0, 0, Math.PI * 2);
+    ctx.fill();
+    circle(ctx, 505, 510, 6);
+    ctx.fill();
+    circle(ctx, 535, 510, 6);
+    ctx.fill();
+    ctx.strokeStyle = '#ff5d5d';
+    ctx.lineWidth = 3;
+    for (const [lx, ly] of [[508, 526], [532, 526], [512, 528], [528, 528]]) {
+      ctx.beginPath();
+      ctx.moveTo(lx, ly);
+      ctx.lineTo(lx - 6, ly + 8);
+      ctx.stroke();
+    }
+  }
+  // A starfish and shells for richness.
+  star(ctx, 100, 505, 12);
+  ctx.fillStyle = '#ff8c2e';
+  ctx.fill();
+  ctx.fillStyle = '#fff8e7';
+  circle(ctx, 380, 540, 8);
+  ctx.fill();
+  circle(ctx, 430, 545, 6);
+  ctx.fill();
+}
+
+function drawUmbrella(ctx, x, y, stripes, stripeChanged) {
+  ctx.strokeStyle = '#8a5a2b';
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  ctx.lineTo(x, y + 75);
+  ctx.stroke();
+  for (let i = 0; i < 4; i += 1) {
+    const a0 = Math.PI + (i * Math.PI) / 4;
+    const a1 = Math.PI + ((i + 1) * Math.PI) / 4;
+    let color = stripes[i % 2];
+    if (stripeChanged && i === 1) color = '#ff5d8f';
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.arc(x, y, 55, a0, a1);
+    ctx.closePath();
+    ctx.fill();
+  }
+  circle(ctx, x, y, 5);
+  ctx.fillStyle = '#ffc53d';
+  ctx.fill();
+}
+
+const beachDiffs = [
+  { id: 'sail-colour', x: 425, y: 275, r: 28, label: 'The sail changed colour' },
+  { id: 'umbrella-stripe', x: 450, y: 470, r: 26, label: 'An umbrella stripe changed colour' },
+  { id: 'bucket-present', x: 300, y: 515, r: 26, label: 'The bucket is gone' },
+  { id: 'crab-present', x: 520, y: 518, r: 24, label: 'The crab scuttled away' },
+  { id: 'gull-count', x: 180, y: 95, r: 20, label: 'A gull flew away' },
+  { id: 'ball-stripe', x: 200, y: 525, r: 24, label: 'The beach ball stripe changed colour' },
+  { id: 'pier-post', x: 80, y: 380, r: 22, label: 'A pier post is missing' },
+  { id: 'sun-ray-count', x: 520, y: 70, r: 32, label: 'The sun lost some rays' },
+];
+
+// ---------------------------------------------------------------------------
+// The catalogue: eight scenes, eight differences each, 64 in all.
 // ---------------------------------------------------------------------------
 export const SCENES = [
   { id: 'level1', number: 1, name: 'NIGHT MARKET', tagline: 'Lanterns, stalls and one sleepy cat', accent: '#ff5d8f', diffs: nightMarketDiffs, draw: drawNightMarket },
@@ -1235,6 +1609,8 @@ export const SCENES = [
   { id: 'level4', number: 4, name: 'BAKERY KITCHEN', tagline: 'Cakes, jars and a chalkboard menu', accent: '#e8b4d6', diffs: bakeryDiffs, draw: drawBakery },
   { id: 'level5', number: 5, name: 'TRAIN STATION', tagline: 'Clocks, posters and pigeons', accent: '#2e86c1', diffs: stationDiffs, draw: drawStation },
   { id: 'level6', number: 6, name: 'GREENHOUSE GARDEN', tagline: 'Plants, a fountain and busy bees', accent: '#58b368', diffs: greenhouseDiffs, draw: drawGreenhouse },
+  { id: 'level7', number: 7, name: 'SPACE STATION', tagline: 'Panels, stars, one floating wrench', accent: '#7b8cff', diffs: spaceStationDiffs, draw: drawSpaceStation },
+  { id: 'level8', number: 8, name: 'BEACH PIER', tagline: 'Umbrellas, buckets and gulls', accent: '#2e86c1', diffs: beachDiffs, draw: drawBeachPier },
 ];
 
 export function sceneById(id) {
